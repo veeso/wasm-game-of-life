@@ -1,3 +1,4 @@
+mod game;
 mod utils;
 
 use wasm_bindgen::prelude::*;
