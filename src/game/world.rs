@@ -17,12 +17,28 @@ pub struct World {
 
 impl World {
     /// Instantiates a new `World`
-    pub fn new(width: u32, height: u32) -> Self {
+    pub fn empty(width: u32, height: u32) -> Self {
+        // TODO: use seed
+
         Self {
             width,
             height,
             cells: vec![Cell::Dead; (width * height) as usize],
         }
+    }
+
+    pub fn new(width: u32, height: u32) -> Self {
+        let mut world = Self::empty(width, height);
+        world.cells = (0..width * height)
+            .map(|i| {
+                if i % 2 == 0 || i % 7 == 0 {
+                    Cell::Alive
+                } else {
+                    Cell::Dead
+                }
+            })
+            .collect();
+        world
     }
 
     /// Returns an iterator over the indexes of alive cells
@@ -119,15 +135,23 @@ mod test {
 
     #[test]
     fn should_create_new_world() {
-        let world = World::new(16, 16);
+        let world = World::empty(16, 16);
         assert_eq!(world.width, 16);
         assert_eq!(world.height, 16);
         assert_eq!(world.cells.len(), 256);
     }
 
     #[test]
+    fn should_create_new_populated_world() {
+        let world = World::new(16, 16);
+        assert_eq!(world.width, 16);
+        assert_eq!(world.height, 16);
+        assert!(world.alive_cells().count() > 16);
+    }
+
+    #[test]
     fn should_get_cell() {
-        let mut world = World::new(16, 16);
+        let mut world = World::empty(16, 16);
         world.cells[18] = Cell::Alive;
         assert_eq!(world.get_cell(1, 2).unwrap(), Cell::Alive);
         assert_eq!(world.get_cell(20, 1), None);
@@ -135,14 +159,14 @@ mod test {
 
     #[test]
     fn should_write_cell() {
-        let mut world = World::new(16, 16);
+        let mut world = World::empty(16, 16);
         world.write_cell(Cell::Alive, 2, 7);
         assert_eq!(world.get_cell(2, 7).unwrap(), Cell::Alive);
     }
 
     #[test]
     fn should_iter_alive_cells() {
-        let mut world = World::new(16, 16);
+        let mut world = World::empty(16, 16);
         world.write_cell(Cell::Alive, 2, 7);
         world.write_cell(Cell::Alive, 1, 2);
         assert_eq!(world.alive_cells().count(), 2);
@@ -150,7 +174,7 @@ mod test {
 
     #[test]
     fn should_iter_dead_cells() {
-        let mut world = World::new(16, 16);
+        let mut world = World::empty(16, 16);
         world.write_cell(Cell::Alive, 2, 7);
         world.write_cell(Cell::Alive, 1, 2);
         assert_eq!(world.dead_cells().count(), 254);
@@ -158,14 +182,14 @@ mod test {
 
     #[test]
     fn should_get_last_row_and_columns() {
-        let world = World::new(16, 20);
+        let world = World::empty(16, 20);
         assert_eq!(world.last_col(), 15);
         assert_eq!(world.last_row(), 19);
     }
 
     #[test]
     fn should_get_neighbours() {
-        let world = World::new(16, 16);
+        let world = World::empty(16, 16);
         assert_eq!(
             world.neighbours(2, 2),
             [
@@ -183,13 +207,13 @@ mod test {
 
     #[test]
     fn should_get_rows_and_columns_from_index() {
-        let world = World::new(16, 16);
+        let world = World::empty(16, 16);
         assert_eq!(world.row_and_column(world.index(8, 13)), (8, 13));
     }
 
     #[test]
     fn should_get_neighbours_over_lower_bounds() {
-        let world = World::new(20, 20);
+        let world = World::empty(20, 20);
         assert_eq!(
             world.neighbours(19, 19),
             [
@@ -207,7 +231,7 @@ mod test {
 
     #[test]
     fn should_get_neighbours_over_upper_bounds() {
-        let world = World::new(20, 20);
+        let world = World::empty(20, 20);
         assert_eq!(
             world.neighbours(0, 0),
             [
