@@ -1,7 +1,7 @@
 mod game;
 mod utils;
 
-pub use game::Game;
+pub use game::{Cell, Game};
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.

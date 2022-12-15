@@ -59,6 +59,19 @@ impl World {
             .map(|(i, _cell)| i)
     }
 
+    pub fn width(&self) -> u32 {
+        self.width
+    }
+
+    pub fn height(&self) -> u32 {
+        self.height
+    }
+
+    /// Get pointer to cells
+    pub fn cells(&self) -> *const Cell {
+        self.cells.as_ptr()
+    }
+
     /// Get cell at provided position
     pub fn get_cell(&self, row: u32, col: u32) -> Option<Cell> {
         self.cells.get(self.index(row, col)).copied()
@@ -69,6 +82,14 @@ impl World {
         let index = self.index(row, col);
         if let Some(world_cell) = self.cells.get_mut(index) {
             *world_cell = cell;
+        }
+    }
+
+    /// Toggle cell
+    pub fn toggle_cell(&mut self, row: u32, col: u32) {
+        let index = self.index(row, col);
+        if let Some(world_cell) = self.cells.get_mut(index) {
+            world_cell.toggle();
         }
     }
 
@@ -161,6 +182,13 @@ mod test {
     fn should_write_cell() {
         let mut world = World::empty(16, 16);
         world.write_cell(Cell::Alive, 2, 7);
+        assert_eq!(world.get_cell(2, 7).unwrap(), Cell::Alive);
+    }
+
+    #[test]
+    fn should_toggle_cell() {
+        let mut world = World::empty(16, 16);
+        world.toggle_cell(2, 7);
         assert_eq!(world.get_cell(2, 7).unwrap(), Cell::Alive);
     }
 

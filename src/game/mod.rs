@@ -24,6 +24,23 @@ impl Game {
         }
     }
 
+    pub fn width(&self) -> u32 {
+        self.world.width()
+    }
+
+    pub fn height(&self) -> u32 {
+        self.world.height()
+    }
+
+    pub fn cells(&self) -> *const Cell {
+        self.world.cells()
+    }
+
+    /// Toggle cell
+    pub fn toggle(&mut self, row: u32, col: u32) {
+        self.world.toggle_cell(row, col);
+    }
+
     /// Play turn
     pub fn tick(&mut self) {
         self.turn += 1;

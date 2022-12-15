@@ -17,6 +17,14 @@ impl Cell {
     pub fn is_alive(&self) -> bool {
         *self == Self::Alive
     }
+
+    /// Toggle current value
+    pub fn toggle(&mut self) {
+        *self = match *self {
+            Self::Alive => Self::Dead,
+            Self::Dead => Self::Alive,
+        }
+    }
 }
 
 #[cfg(test)]
@@ -30,5 +38,14 @@ mod test {
     fn should_tell_whether_cell_is_alive() {
         assert_eq!(Cell::Dead.is_alive(), false,);
         assert_eq!(Cell::Alive.is_alive(), true);
+    }
+
+    #[test]
+    fn should_toggle_cell() {
+        let mut cell = Cell::Alive;
+        cell.toggle();
+        assert_eq!(cell, Cell::Dead);
+        cell.toggle();
+        assert_eq!(cell, Cell::Alive);
     }
 }
