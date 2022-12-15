@@ -14,6 +14,7 @@ pub struct Game {
     world: World,
 }
 
+#[wasm_bindgen]
 impl Game {
     /// Instantiates a new `Game`
     pub fn new(width: u32, height: u32) -> Self {
@@ -24,7 +25,7 @@ impl Game {
     }
 
     /// Play turn
-    pub fn play_turn(&mut self) {
+    pub fn tick(&mut self) {
         self.turn += 1;
         // iter alive cells
         let mut changes = Vec::new();
